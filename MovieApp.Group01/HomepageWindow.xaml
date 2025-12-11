@@ -1,0 +1,434 @@
+﻿<Window x:Class="MovieApp.Group01.HomepageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MovieApp.Group01"
+        mc:Ignorable="d"
+        Title="Homepage"
+        Height="800" Width="1400"
+        WindowStartupLocation="CenterScreen"
+        Background="White"
+        ResizeMode="CanResize"
+        Loaded="Window_Loaded">
+
+    <Window.Resources>
+
+        <!-- 🎨 PALETTE -->
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#8B3C46"/>
+        <SolidColorBrush x:Key="SecondaryBrush" Color="#EC9FAB"/>
+        <SolidColorBrush x:Key="PrimaryTextBrush" Color="#370808"/>
+        <SolidColorBrush x:Key="SidebarBrush" Color="#F3D4D0"/>
+        <SolidColorBrush x:Key="CardBorderBrush" Color="#EC9FAB"/>
+
+
+        <!-- Sidebar button -->
+        <Style x:Key="NavMenuButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="20,15"/>
+            <Setter Property="Foreground" Value="#8B3C46"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#EC9FAB"/>
+                                <Setter Property="Foreground" Value="#370808"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Selected -->
+        <Style x:Key="NavMenuButtonSelected" TargetType="Button"
+               BasedOn="{StaticResource NavMenuButton}">
+            <Setter Property="Background" Value="#D97E8A"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+
+        <!-- Movie card -->
+        <Style x:Key="MovieCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Margin" Value="0,0,15,20"/>
+            <Setter Property="Cursor" Value="Hand"/>
+
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="20"
+                                      ShadowDepth="3"
+                                      Color="#E7C0BC"/>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX="1.03" ScaleY="1.03"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- Director card-->
+        <Style x:Key="DirectorCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0 6 12 6"/>
+            <Setter Property="BorderBrush" Value="#F8C5D2"/>
+            <!-- viền hồng nhạt -->
+            <Setter Property="BorderThickness" Value="1"/>
+
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <!-- Bóng đổ hồng, tỏa rộng giống hình bạn gửi -->
+                    <DropShadowEffect BlurRadius="10"
+                              ShadowDepth="0"
+                              Opacity="0.7"
+                              Color="#F3A6BC"/>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <!-- Hover sáng hơn chút -->
+                            <DropShadowEffect BlurRadius="22"
+                                      ShadowDepth="0"
+                                      Opacity="0.9"
+                                      Color="#F8D2DB"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- PANEL HIỆN KHI HOVER -->
+        <Style x:Key="HoverMovieDetailPanel" TargetType="Border">
+            <Setter Property="Background" Value="#1A000000"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+
+            <Style.Triggers>
+                <Trigger Property="Tag" Value="Show">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="Visibility" Value="Visible"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Nút Xem Ngay -->
+        <Style x:Key="PlayPrimaryButton" TargetType="Button">
+            <Setter Property="Foreground" Value="#370808"/>
+            <Setter Property="Background" Value="#FFD54F"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                        CornerRadius="10"
+                        Padding="{TemplateBinding Padding}">
+                            <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+                                <TextBlock Text="▶"
+                                   FontSize="14"
+                                   Margin="0,0,6,0"/>
+                                <ContentPresenter/>
+                            </StackPanel>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFCA28"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <!-- ⭐ Filter Dropdown Style (FULL TEMPLATE + BO GÓC 20PX) -->
+        <Style x:Key="FilterDropDown" TargetType="ComboBox">
+            <Setter Property="Width" Value="160"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="#370808"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+
+                        <Grid>
+                            <!-- BORDER BO GÓC -->
+                            <Border x:Name="Border"
+                                    Background="#FDEFF1"
+                                    BorderBrush="#EC9FAB"
+                                    BorderThickness="1.5"
+                                    CornerRadius="20"
+                                    Padding="{TemplateBinding Padding}">
+
+                                <!-- TOGGLEBTN -->
+                                <ToggleButton x:Name="PART_ToggleButton"
+                                              Background="Transparent"
+                                              BorderThickness="0"
+                                              Focusable="False"
+                                              Cursor="Hand"
+                                              IsChecked="{Binding IsDropDownOpen,
+                                                          Mode=TwoWay,
+                                                          RelativeSource={RelativeSource TemplatedParent}}">
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="24"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- TEXT -->
+                                        <TextBlock Text="{TemplateBinding SelectionBoxItem}"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="#370808"
+                                                   FontSize="15"/>
+
+                                        <!-- ARROW -->
+                                        <TextBlock Text="▼"
+                                                   Grid.Column="1"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="#8B3C46"
+                                                   FontSize="13"/>
+                                    </Grid>
+
+                                </ToggleButton>
+                            </Border>
+
+                            <!-- POPUP -->
+                            <Popup x:Name="Popup"
+                                   Placement="Bottom"
+                                   AllowsTransparency="True"
+                                   PopupAnimation="Slide"
+                                   IsOpen="{Binding IsDropDownOpen,
+                                            RelativeSource={RelativeSource TemplatedParent}}">
+
+                                <Border Background="White"
+                                        BorderBrush="#EC9FAB"
+                                        BorderThickness="1"
+                                        CornerRadius="10"
+                                        Margin="0,4,0,0">
+
+                                    <ScrollViewer MaxHeight="220">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+
+                                </Border>
+                            </Popup>
+
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#F9D8DF"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#8B3C46"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <!-- ROOT -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+
+        <!-- ⭐ SIDEBAR -->
+        <Border Grid.Column="0"
+                Background="#E7C0BC"
+                BorderBrush="#EC9FAB"
+                BorderThickness="0,0,2,0"
+                CornerRadius="20"
+                Margin="-20,0,0,0">
+
+            <StackPanel Margin="50,40,20,40">
+
+                <TextBlock Text="VisionTrail"
+                           FontSize="30"
+                           FontWeight="Bold"
+                           Foreground="#8B3C46"
+                           Margin="0,0,0,40"/>
+
+                <TextBlock Text="Menu"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Margin="0,0,0,15"
+                           Foreground="#8B3C46"/>
+
+                <!-- HOME -->
+                <Button Style="{StaticResource NavMenuButtonSelected}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🏠" FontSize="20" Margin="0,0,12,0"/>
+                        <TextBlock Text="Home"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Style="{StaticResource NavMenuButton}" Click="WatchlistButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🌟" FontSize="22" Margin="0,0,12,0"/>
+                        <TextBlock Text="Watchlist"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Style="{StaticResource NavMenuButton}"
+                        Click="ProfileButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="👤" FontSize="20" Margin="0,0,12,0"/>
+                        <TextBlock Text="Profile"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Style="{StaticResource NavMenuButton}" Click="HistoryButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🕒" FontSize="20" Margin="0,0,12,0"/>
+                        <TextBlock Text="History"/>
+                    </StackPanel>
+                </Button>
+
+                <Border Height="1" Background="#EC9FAB" Margin="0,20,0,20"/>
+
+                <Button Style="{StaticResource NavMenuButton}"
+                        Click="LogoutButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🚪" FontSize="20" Margin="0,0,12,0"/>
+                        <TextBlock Text="Logout"/>
+                    </StackPanel>
+                </Button>
+
+            </StackPanel>
+        </Border>
+
+
+        <!-- ⭐ MAIN CONTENT -->
+        <ScrollViewer Grid.Column="1" Padding="0,0,20,0">
+            <StackPanel Margin="40,30">
+
+                <!-- HEADER -->
+                <Grid Margin="0,0,0,30">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Title -->
+                    <TextBlock Text="Home"
+                               FontSize="36"
+                               FontWeight="Bold"
+                               Foreground="#8B3C46"/>
+
+                    <!-- SEARCH -->
+                    <Border Grid.Column="1"
+                            Background="White"
+                            BorderBrush="#EC9FAB"
+                            BorderThickness="2"
+                            CornerRadius="25"
+                            Padding="30,9"
+                            Margin="20,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🔍"
+                                       FontSize="18"
+                                       Margin="0,0,10,0"
+                                       Foreground="#8B3C46"/>
+                            <TextBox x:Name="SearchBox"
+                                     Width="300"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     FontSize="14"
+                                     Foreground="#8B3C46"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ⭐ FILTERS -->
+                    <StackPanel Grid.Column="2"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="10,0,0,0">
+
+                        <ComboBox x:Name="GenreFilter"
+                                  Style="{StaticResource FilterDropDown}"
+                                  SelectionChanged="GenreFilter_SelectionChanged"/>
+
+                        <ComboBox x:Name="CountryFilter"
+                                  Margin="20,0,0,0"
+                                  Style="{StaticResource FilterDropDown}"
+                                  SelectionChanged="CountryFilter_SelectionChanged"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+                <!-- MOVIES -->
+                <TextBlock Text="Newest Trailers"
+                           FontSize="22"
+                           FontWeight="Bold"
+                           Foreground="#370808"
+                           Margin="0,0,0,15"/>
+
+                <WrapPanel x:Name="RecommendedGrid" Margin="0,0,0,20"/>
+
+                <!-- DIRECTORS -->
+                <TextBlock Text="Directors"
+                           FontSize="22"
+                           FontWeight="Bold"
+                           Foreground="#370808"
+                           Margin="0,25,0,12"/>
+
+                <UniformGrid x:Name="ArtistPanel"
+                         Columns="2"
+                         Margin="0,0,0,20"/>
+
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</Window>

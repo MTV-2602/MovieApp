@@ -1,0 +1,226 @@
+﻿<Window x:Class="MovieApp.Group01.MoviePlayerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MovieApp.Group01"
+        
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        
+        mc:Ignorable="d"
+        Title="Watching Movie - Pink World" Height="768" Width="1366"
+        WindowStartupLocation="CenterScreen"
+        
+        WindowStyle="None"
+        AllowsTransparency="False"
+        Background="#E7C0BC"
+        ResizeMode="CanResize"
+        
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="BabyPink" Color="#E7C0BC"/>
+        <SolidColorBrush x:Key="BlackBean" Color="#370808"/>
+        <SolidColorBrush x:Key="Cordovan" Color="#8B3C46"/>
+        <SolidColorBrush x:Key="NewYorkPink" Color="#D97E8A"/>
+        <SolidColorBrush x:Key="Marvelous" Color="#EC9FAB"/>
+
+        <Style x:Key="PlayerButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource Cordovan}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="20">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource NewYorkPink}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" x:Name="RowHeader"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" x:Name="RowInfo"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="20,15">
+            <Button x:Name="BackButton" Content="← Back" 
+                    HorizontalAlignment="Left"
+                    Style="{StaticResource PlayerButton}"
+                    Click="BackButton_Click"/>
+        </Grid>
+
+        <Border Grid.Row="1" Background="Black" Margin="20,0,20,10" 
+                CornerRadius="10" BorderBrush="{StaticResource Cordovan}" BorderThickness="4">
+
+            <Grid Background="Black">
+                <wv2:WebView2 x:Name="WebPlayer"/>
+
+                <TextBlock x:Name="OverlayPlay" Text="▶" 
+                           Foreground="{StaticResource Marvelous}" 
+                           FontSize="100" 
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Opacity="0.8"
+                           Visibility="Visible"
+                           IsHitTestVisible="False"/>
+
+                <Rectangle Fill="Transparent" Cursor="Hand" MouseLeftButtonDown="TogglePlay_Click"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2" Background="{StaticResource BlackBean}" Margin="20,0,20,10" CornerRadius="10" Padding="15,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="BtnPlayPause" Grid.Column="0" Content="▶" 
+                        Style="{StaticResource PlayerButton}" Width="50" Height="40"
+                        Background="{StaticResource Marvelous}" Foreground="{StaticResource BlackBean}"
+                        Click="TogglePlay_Click"/>
+
+                <Slider x:Name="ProgressSlider" Grid.Column="1" VerticalAlignment="Center" Margin="15,0"
+                        Minimum="0" Maximum="1" Value="0"
+                        Thumb.DragStarted="ProgressSlider_DragStarted"
+                        Thumb.DragCompleted="ProgressSlider_DragCompleted"
+                        IsMoveToPointEnabled="True"
+                        Foreground="{StaticResource NewYorkPink}"/>
+
+                <TextBlock x:Name="TxtTime" Grid.Column="2" Text="00:00 / 00:00" 
+                           Foreground="{StaticResource Marvelous}" VerticalAlignment="Center" 
+                           FontWeight="Bold" Margin="0,0,15,0"/>
+
+                <StackPanel Grid.Column="3" Orientation="Horizontal">
+                    <TextBlock Text="Vol" Foreground="White" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <Slider x:Name="VolumeSlider" Width="100" VerticalAlignment="Center"
+                            Minimum="0" Maximum="1" Value="1.0"
+                            ValueChanged="VolumeSlider_ValueChanged"/>
+                </StackPanel>
+
+                <Button x:Name="BtnFullscreen" Grid.Column="4" Content="⛶" 
+                        Style="{StaticResource PlayerButton}" Width="40" Height="40"
+                        Background="Transparent" Foreground="White" FontSize="18"
+                        Margin="10,0,0,0"
+                        Click="BtnFullscreen_Click"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="3" Margin="20,10,20,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" CornerRadius="10" Background="{StaticResource Marvelous}" Height="280">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="10" Color="#370808" Opacity="0.3"/>
+                </Border.Effect>
+                <Image x:Name="ImgPoster" Stretch="UniformToFill">
+                    <Image.Clip>
+                        <RectangleGeometry Rect="0,0,200,280" RadiusX="10" RadiusY="10"/>
+                    </Image.Clip>
+                </Image>
+            </Border>
+
+            <StackPanel Grid.Column="1" Margin="20,0">
+                <TextBlock x:Name="TxtTitle" Text="Loading..." 
+                           FontFamily="Segoe UI" FontSize="36" FontWeight="ExtraBold" 
+                           Foreground="{StaticResource BlackBean}" TextWrapping="Wrap"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,10">
+                    <TextBlock Text="Director: " FontWeight="Bold" Foreground="{StaticResource Cordovan}" FontSize="16"/>
+                    <TextBlock x:Name="TxtDirector" Text="..." Foreground="{StaticResource BlackBean}" FontSize="16"/>
+
+                    <TextBlock Text=" • Genre: " FontWeight="Bold" Foreground="{StaticResource Cordovan}" FontSize="16" Margin="15,0,0,0"/>
+                    <TextBlock x:Name="TxtGenre" Text="..." Foreground="{StaticResource BlackBean}" FontSize="16"/>
+
+                    <TextBlock Text=" • Year: " FontWeight="Bold" Foreground="{StaticResource Cordovan}" FontSize="16" Margin="15,0,0,0"/>
+                    <TextBlock x:Name="TxtYear" Text="..." Foreground="{StaticResource BlackBean}" FontSize="16"/>
+                </StackPanel>
+
+                <TextBlock Text="Description" FontWeight="Bold" Foreground="{StaticResource Cordovan}" FontSize="18" Margin="0,15,0,5"/>
+                <TextBlock x:Name="TxtDescription" Text="..." 
+                           FontSize="15" Foreground="{StaticResource BlackBean}" TextWrapping="Wrap" LineHeight="22"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" VerticalAlignment="Top">
+                <Button Content="+ Add to Watchlist" Style="{StaticResource PlayerButton}" 
+                        Background="{StaticResource BlackBean}" Margin="0,0,0,10"
+                        Click="AddToWatchlist_Click"/>
+
+                <Border Background="White" CornerRadius="10" Padding="15" Margin="0,10,0,0" 
+                        BorderBrush="{StaticResource NewYorkPink}" BorderThickness="2">
+                    <StackPanel>
+                        <TextBlock Text="★ Rate this movie" FontWeight="Bold" FontSize="16" 
+                                   Foreground="{StaticResource BlackBean}" Margin="0,0,0,10"/>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                            <Button x:Name="Star1" Content="☆" FontSize="30" 
+                                    Background="Transparent" BorderThickness="0" 
+                                    Foreground="{StaticResource Cordovan}" Cursor="Hand"
+                                    Click="Star_Click" Tag="1"/>
+                            <Button x:Name="Star2" Content="☆" FontSize="30" 
+                                    Background="Transparent" BorderThickness="0" 
+                                    Foreground="{StaticResource Cordovan}" Cursor="Hand"
+                                    Click="Star_Click" Tag="2"/>
+                            <Button x:Name="Star3" Content="☆" FontSize="30" 
+                                    Background="Transparent" BorderThickness="0" 
+                                    Foreground="{StaticResource Cordovan}" Cursor="Hand"
+                                    Click="Star_Click" Tag="3"/>
+                            <Button x:Name="Star4" Content="☆" FontSize="30" 
+                                    Background="Transparent" BorderThickness="0" 
+                                    Foreground="{StaticResource Cordovan}" Cursor="Hand"
+                                    Click="Star_Click" Tag="4"/>
+                            <Button x:Name="Star5" Content="☆" FontSize="30" 
+                                    Background="Transparent" BorderThickness="0" 
+                                    Foreground="{StaticResource Cordovan}" Cursor="Hand"
+                                    Click="Star_Click" Tag="5"/>
+                        </StackPanel>
+
+                        <TextBlock x:Name="TxtRatingInfo" Text="Not rated yet" 
+                                   TextAlignment="Center" FontSize="12" 
+                                   Foreground="{StaticResource NewYorkPink}" FontStyle="Italic"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="White" CornerRadius="10" Padding="15" Margin="0,10,0,0" 
+                        BorderBrush="{StaticResource NewYorkPink}" BorderThickness="2">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,10">
+                            <TextBlock Text="Comments" FontWeight="Bold" FontSize="16" 
+                                       Foreground="{StaticResource BlackBean}" 
+                                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TxtCommentCount" Text="0 comments" 
+                                       FontSize="12" Foreground="{StaticResource Cordovan}"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        </Grid>
+                        
+                        <Button x:Name="BtnOpenComments" Content="View &amp; Comment" 
+                                Style="{StaticResource PlayerButton}" 
+                                Background="{StaticResource NewYorkPink}"
+                                Click="OpenComments_Click"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

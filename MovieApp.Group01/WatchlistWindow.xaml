@@ -1,0 +1,143 @@
+﻿<Window x:Class="MovieApp.Group01.WatchlistWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="My Watchlist - Pink World" Height="700" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#FCE4EC">
+
+    <Window.Resources>
+        <Style TargetType="Button" x:Key="PinkBtn">
+            <Setter Property="Background" Value="#D81B60"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="15">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#AD1457"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#880E4F"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Bd" Background="White" CornerRadius="10" Padding="{TemplateBinding Padding}" BorderBrush="#F48FB1" BorderThickness="1">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#F8BBD0"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#D81B60"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Button x:Name="BackButton" Content="← Back to Home" 
+                HorizontalAlignment="Left" Margin="0,0,0,15"
+                Background="#D81B60" Foreground="White" FontWeight="Bold" Padding="15,8"
+                BorderThickness="0" Cursor="Hand"
+                Grid.Row="0"
+                Click="BackButton_Click">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="15"/>
+                </Style>
+            </Button.Resources>
+        </Button>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <DockPanel Grid.Column="0" Margin="0,0,20,0">
+                <TextBlock Text="Your Lists" DockPanel.Dock="Top" FontSize="22" FontWeight="Bold" Foreground="#880E4F" Margin="0,0,0,15"/>
+
+                <Button DockPanel.Dock="Bottom" Content="+ Create New List" Style="{StaticResource PinkBtn}" Click="CreateList_Click" Margin="0,10,0,0"/>
+
+                <ListBox x:Name="LbWatchlists" Background="Transparent" BorderThickness="0" 
+                         DisplayMemberPath="Title" SelectedValuePath="WatchlistId"
+                         SelectionChanged="LbWatchlists_SelectionChanged"/>
+            </DockPanel>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+                    <TextBlock x:Name="TxtSelectedListTitle" Text="Select a list" FontSize="22" FontWeight="Bold" Foreground="#8B3C46"/>
+                    <TextBlock x:Name="TxtCount" Text="(0 items)" FontSize="16" Foreground="#EC407A" VerticalAlignment="Bottom" Margin="10,0,0,2"/>
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="IcMovies">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White" CornerRadius="15" Margin="0,0,0,10" Padding="10">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#F8BBD0" BlurRadius="10" Opacity="0.5"/>
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="60"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border CornerRadius="8" ClipToBounds="True">
+                                            <Image Source="{Binding PosterUrl}" Stretch="UniformToFill"/>
+                                        </Border>
+
+                                        <StackPanel Grid.Column="1" Margin="15,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Title}" FontSize="16" FontWeight="Bold" Foreground="#880E4F"/>
+                                            <TextBlock Text="{Binding Director.DirectorName}" FontSize="12" Foreground="Gray"/>
+                                            <TextBlock Text="{Binding Genre}" FontSize="12" Foreground="#D81B60"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="▶ Play" Style="{StaticResource PinkBtn}" Width="70" Height="35" 
+                                                    Tag="{Binding MovieId}" Click="PlayMovie_Click"/>
+
+                                            <Button Content="🗑" Background="Transparent" Foreground="Red" BorderThickness="0" FontSize="16" Margin="10,0,0,0"
+                                                    Tag="{Binding MovieId}" Click="RemoveMovie_Click" Cursor="Hand"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
