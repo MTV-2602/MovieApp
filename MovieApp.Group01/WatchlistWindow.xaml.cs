@@ -89,11 +89,54 @@ namespace MovieApp.Group01
 
         private void CreateList_Click(object sender, RoutedEventArgs e)
         {
-            // Mở lại cái Dialog AddToWatchlist nhưng chỉ dùng để tạo mới
-            // Hoặc đơn giản dùng InputDialog (nhưng WPF k có sẵn).
-            // Ở đây tôi tạo nhanh 1 watchlist mặc định để demo
-            _watchlistService.CreateWatchlist(_currentUserId, "New List " + System.DateTime.Now.Ticks);
-            LoadWatchlists();
+            var inputWin = new InputNameWindow();
+            inputWin.Owner = this; 
+
+            if (inputWin.ShowDialog() == true)
+            {
+                string listName = inputWin.ResultName;
+
+                _watchlistService.CreateWatchlist(_currentUserId, listName);
+
+                LoadWatchlists();
+
+                if (LbWatchlists.Items.Count > 0)
+                    LbWatchlists.SelectedIndex = LbWatchlists.Items.Count - 1;
+            }
+        }
+
+        private void DeleteList_Click(object sender, RoutedEventArgs e)
+        {
+            if (LbWatchlists.SelectedItem is not Watchlist selectedList)
+            {
+                MessageBox.Show("Please select a watchlist to delete.");
+                return;
+            }
+
+            var result = MessageBox.Show($"Are you sure you want to delete '{selectedList.Title}'?\nAll movies in this list will be removed from the watchlist.",
+                                         "Confirm Delete",
+                                         MessageBoxButton.YesNo,
+                                         MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    _watchlistService.DeleteWatchlist(selectedList.WatchlistId);
+
+                    MessageBox.Show("Watchlist deleted successfully.");
+
+                    LoadWatchlists();
+
+                    IcMovies.ItemsSource = null;
+                    TxtSelectedListTitle.Text = "Select a list";
+                    TxtCount.Text = "(0 items)";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error deleting list: " + ex.Message);
+                }
+            }
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)

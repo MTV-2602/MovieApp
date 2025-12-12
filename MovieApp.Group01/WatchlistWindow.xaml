@@ -81,7 +81,14 @@
             <DockPanel Grid.Column="0" Margin="0,0,20,0">
                 <TextBlock Text="Your Lists" DockPanel.Dock="Top" FontSize="22" FontWeight="Bold" Foreground="#880E4F" Margin="0,0,0,15"/>
 
-                <Button DockPanel.Dock="Bottom" Content="+ Create New List" Style="{StaticResource PinkBtn}" Click="CreateList_Click" Margin="0,10,0,0"/>
+                <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                    <Button Content="- Delete Selected" Style="{StaticResource PinkBtn}" 
+                            Background="#C2185B" Margin="0,0,0,20"
+                            Click="DeleteList_Click" Height="30"/>
+
+                    <Button Content="+ Create New List" Style="{StaticResource PinkBtn}" 
+                            Click="CreateList_Click" Height="30"/>
+                </StackPanel>
 
                 <ListBox x:Name="LbWatchlists" Background="Transparent" BorderThickness="0" 
                          DisplayMemberPath="Title" SelectedValuePath="WatchlistId"

@@ -23,5 +23,15 @@ namespace MovieApp.DAL.Repositories
             _ctx.SaveChanges();
             return watchlist;
         }
+
+        public void Delete(int watchlistId)
+        {
+            var item = _ctx.Watchlists.Find(watchlistId);
+            if (item != null)
+            {
+                _ctx.Watchlists.Remove(item);
+                _ctx.SaveChanges();
+            }
+        }
     }
 }

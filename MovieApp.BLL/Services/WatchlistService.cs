@@ -29,5 +29,10 @@ namespace MovieApp.BLL.Services
             };
             return _repo.Create(newWatchlist);
         }
+
+        public void DeleteWatchlist(int watchlistId)
+        {
+            _repo.Delete(watchlistId);
+        }
     }
 }

@@ -206,22 +206,15 @@ namespace MovieApp.Group01
 
         private void OpenTrailer(Movie movie)
         {
-            if (string.IsNullOrWhiteSpace(movie.TrailerUrl))
-            {
-                MessageBox.Show("This movie does not have a trailer.");
-                return;
-            }
 
-            string trailerPath = System.IO.Path.GetFullPath(movie.TrailerUrl);
+            if (movie.MovieId <= 0) return;
 
-            if (!System.IO.File.Exists(trailerPath))
-            {
-                MessageBox.Show("Trailer file not found:\n" + trailerPath);
-                return;
-            }
+            var playerWindow = new MoviePlayerWindow(movie.MovieId);
 
-            var trailerWin = new TrailerWindow(trailerPath);
-            trailerWin.ShowDialog();
+            this.Hide();
+
+            playerWindow.Closed += (s, args) => this.Show();
+            playerWindow.Show();
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)

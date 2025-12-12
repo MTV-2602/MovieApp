@@ -278,55 +278,8 @@ namespace MovieApp.Group01
             win.Show();
         }
 
-        //private void LoadMoviesByDirector(int directorId, string directorName)
-        //{
-        //    // Lấy danh sách phim theo DirectorId
-        //    var movies = _movieService.GetAllMovies()
-        //                              .Where(m => m.DirectorId == directorId)
-        //                              .ToList();
-
-        //    RecommendedGrid.Children.Clear();
-
-        //    if (movies.Count == 0)
-        //    {
-        //        RecommendedGrid.Children.Add(new TextBlock
-        //        {
-        //            Text = $"Không có phim nào của đạo diễn {directorName}.",
-        //            FontSize = 16,
-        //            Foreground = Brushes.Gray,
-        //            Margin = new Thickness(10)
-        //        });
-        //        return;
-        //    }
-
-        //    foreach (var m in movies)
-        //    {
-        //        RecommendedGrid.Children.Add(CreateMovieCard(m));
-        //    }
-        //}
-
-
         private void OpenTrailer(Movie movie)
         {
-            //if (string.IsNullOrWhiteSpace(movie.TrailerUrl))
-            //{
-            //    MessageBox.Show("This movie does not have a trailer.");
-            //    return;
-            //}
-
-            //string trailerPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, movie.TrailerUrl);
-
-            //// DEBUG
-            //MessageBox.Show("Trailer path:\n" + trailerPath);
-
-            //if (!System.IO.File.Exists(trailerPath))
-            //{
-            //    MessageBox.Show("❌ File does NOT exist:\n" + trailerPath);
-            //    return;
-            //}
-
-            //var trailerWin = new TrailerWindow(trailerPath);
-            //trailerWin.ShowDialog();
 
             if (movie.MovieId <= 0) return;
 
@@ -337,7 +290,6 @@ namespace MovieApp.Group01
             playerWindow.Closed += (s, args) => this.Show();
             playerWindow.Show();
         }
-
 
 
         // ===================================
