@@ -1,0 +1,262 @@
+<Window
+    x:Class="MovieApp.Group01.AddMovieWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Add/Edit Movie"
+    Width="600"
+    Height="700"
+    Background="White"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <Window.Resources>
+
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#8B3C46" />
+        <SolidColorBrush x:Key="SecondaryBrush" Color="#EC9FAB" />
+        <SolidColorBrush x:Key="PrimaryTextBrush" Color="#370808" />
+        <SolidColorBrush x:Key="ErrorBrush" Color="#F44336" />
+
+        <!--  Label Style  -->
+        <Style x:Key="FormLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#370808" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+
+        <!--  TextBox Style  -->
+        <Style x:Key="FormTextBox" TargetType="TextBox">
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="BorderBrush" Value="#EC9FAB" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#370808" />
+            <Setter Property="Margin" Value="0,0,0,15" />
+        </Style>
+
+        <!--  ComboBox Style  -->
+        <Style x:Key="FormComboBox" TargetType="ComboBox">
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="BorderBrush" Value="#EC9FAB" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#370808" />
+            <Setter Property="Margin" Value="0,0,0,15" />
+        </Style>
+
+        <!--  DatePicker Style  -->
+        <Style x:Key="FormDatePicker" TargetType="DatePicker">
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="BorderBrush" Value="#EC9FAB" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#370808" />
+            <Setter Property="Margin" Value="0,0,0,15" />
+        </Style>
+
+        <!--  Button Style  -->
+        <Style x:Key="FormButton" TargetType="Button">
+            <Setter Property="Padding" Value="20,10" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.05" ScaleY="1.05" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Error TextBlock Style  -->
+        <Style x:Key="ErrorText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="#F44336" />
+            <Setter Property="Margin" Value="0,-10,0,10" />
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  HEADER  -->
+        <TextBlock
+            Grid.Row="0"
+            Margin="0,0,0,25"
+            FontSize="28"
+            FontWeight="Bold"
+            Foreground="#8B3C46"
+            Text="Add/Edit Movie" />
+
+        <!--  FORM  -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+
+                <!--  Title  -->
+                <TextBlock Style="{StaticResource FormLabel}" Text="Title *" />
+                <TextBox
+                    x:Name="TitleTextBox"
+                    Style="{StaticResource FormTextBox}"
+                    TextChanged="TitleTextBox_TextChanged" />
+                <TextBlock
+                    x:Name="TitleError"
+                    Style="{StaticResource ErrorText}"
+                    Text="Title is required" />
+
+                <!--  Description  -->
+                <TextBlock Style="{StaticResource FormLabel}" Text="Description" />
+                <TextBox
+                    x:Name="DescriptionTextBox"
+                    Height="80"
+                    AcceptsReturn="True"
+                    Style="{StaticResource FormTextBox}"
+                    TextWrapping="Wrap"
+                    VerticalScrollBarVisibility="Auto" />
+
+                <!--  Genre  -->
+                <TextBlock Style="{StaticResource FormLabel}" Text="Genre *" />
+                <ComboBox
+                    x:Name="GenreComboBox"
+                    SelectionChanged="GenreComboBox_SelectionChanged"
+                    Style="{StaticResource FormComboBox}">
+                    <ComboBoxItem Content="Action" />
+                    <ComboBoxItem Content="Comedy" />
+                    <ComboBoxItem Content="Drama" />
+                    <ComboBoxItem Content="Horror" />
+                    <ComboBoxItem Content="Thriller" />
+                    <ComboBoxItem Content="Sci-Fi" />
+                    <ComboBoxItem Content="Romance" />
+                    <ComboBoxItem Content="Adventure" />
+                    <ComboBoxItem Content="Animation" />
+                    <ComboBoxItem Content="Documentary" />
+                    <ComboBoxItem Content="Other" />
+                </ComboBox>
+                <TextBlock
+                    x:Name="GenreError"
+                    Style="{StaticResource ErrorText}"
+                    Text="Genre is required" />
+
+                <!--  Director  -->
+                <TextBlock Style="{StaticResource FormLabel}" Text="Director" />
+                <ComboBox
+                    x:Name="DirectorComboBox"
+                    DisplayMemberPath="DirectorName"
+                    SelectedValuePath="DirectorId"
+                    Style="{StaticResource FormComboBox}" />
+
+                <!--  Release Date  -->
+                <TextBlock Style="{StaticResource FormLabel}" Text="Release Date" />
+                <DatePicker x:Name="ReleaseDatePicker" Style="{StaticResource FormDatePicker}" />
+
+                <!--  Duration  -->
+                <TextBlock Style="{StaticResource FormLabel}" Text="Duration (minutes)" />
+                <TextBox
+                    x:Name="DurationTextBox"
+                    PreviewTextInput="DurationTextBox_PreviewTextInput"
+                    Style="{StaticResource FormTextBox}" />
+
+                <!--  Poster  -->
+                <TextBlock Style="{StaticResource FormLabel}" Text="Poster Image" />
+                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                    <Button
+                        x:Name="SelectPosterButton"
+                        Margin="0,0,10,0"
+                        Padding="15,8"
+                        Background="#2196F3"
+                        Click="SelectPosterButton_Click"
+                        Content="📷 Select Image"
+                        Style="{StaticResource FormButton}" />
+                    <TextBlock
+                        x:Name="PosterFileNameText"
+                        Margin="10,0,0,0"
+                        VerticalAlignment="Center"
+                        Foreground="#370808"
+                        Text="No file selected" />
+                </StackPanel>
+
+                <TextBox x:Name="PosterUrlTextBox" Visibility="Collapsed" />
+
+                <!--  Trailer Video  -->
+                <TextBlock Style="{StaticResource FormLabel}" Text="Trailer Video" />
+                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                    <Button
+                        x:Name="SelectTrailerButton"
+                        Margin="0,0,10,0"
+                        Padding="15,8"
+                        Background="#FF5722"
+                        Click="SelectTrailerButton_Click"
+                        Content="🎬 Select Video"
+                        Style="{StaticResource FormButton}" />
+                    <TextBlock
+                        x:Name="TrailerFileNameText"
+                        Margin="10,0,0,0"
+                        VerticalAlignment="Center"
+                        Foreground="#370808"
+                        Text="No file selected" />
+                </StackPanel>
+
+                <TextBox x:Name="TrailerUrlTextBox" Visibility="Collapsed" />
+
+                <!--  Status  -->
+                <TextBlock Style="{StaticResource FormLabel}" Text="Status *" />
+                <ComboBox x:Name="StatusComboBox" Style="{StaticResource FormComboBox}">
+                    <ComboBoxItem Content="Available" IsSelected="True" />
+                    <ComboBoxItem Content="Unavailable" />
+                </ComboBox>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!--  BUTTONS  -->
+        <StackPanel
+            Grid.Row="2"
+            Margin="0,20,0,0"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button
+                x:Name="SaveButton"
+                Margin="0,0,10,0"
+                Background="#4CAF50"
+                Click="SaveButton_Click"
+                Content="Save"
+                Style="{StaticResource FormButton}" />
+            <Button
+                Background="#9E9E9E"
+                Click="CancelButton_Click"
+                Content="Cancel"
+                Style="{StaticResource FormButton}" />
+        </StackPanel>
+
+    </Grid>
+</Window>
+

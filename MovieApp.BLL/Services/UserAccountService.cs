@@ -96,5 +96,55 @@ namespace MovieApp.BLL.Services
         {
             return _repo.GetAll();
         }
+
+        // ============================
+        //  CHANGE ROLE
+        // ============================
+        public void ChangeRole(int userId, int role)
+        {
+            var user = _repo.GetById(userId);
+            if (user == null)
+                throw new Exception("User not found");
+
+            if (role != 1 && role != 2)
+                throw new ArgumentException("Invalid role. Role must be 1 (Admin) or 2 (User)");
+
+            user.Role = role;
+            _repo.Update(user);
+        }
+
+        public bool CreateUser(string displayName, string username, string password, int role)
+        {
+            if (_repo.GetByUsername(username) != null)
+                return false;
+
+            if (role != 1 && role != 2)
+                throw new ArgumentException("Invalid role. Role must be 1 (Admin) or 2 (User)");
+
+            var newUser = new UserAccount
+            {
+                DisplayName = displayName,
+                Username = username,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+                CreatedAt = DateTime.Now,
+                Status = "Active",
+                Role = role
+            };
+
+            _repo.Create(newUser);
+            return true;
+        }
+
+        public void DeleteUser(int userId)
+        {
+            var user = _repo.GetById(userId);
+            if (user == null)
+                throw new Exception("User not found");
+
+            if (user.Role == 1)
+                throw new Exception("Cannot delete admin user");
+
+            _repo.Delete(userId);
+        }
     }
 }

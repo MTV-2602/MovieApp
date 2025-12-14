@@ -1,0 +1,256 @@
+<Page
+    x:Class="MovieApp.Group01.AdminDashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="StatCard" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#EC9FAB" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="20" />
+            <Setter Property="Margin" Value="10" />
+        </Style>
+        <Style x:Key="StatValue" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="36" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="#8B3C46" />
+            <Setter Property="Margin" Value="0,5,0,0" />
+        </Style>
+        <Style x:Key="StatLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="#666" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Grid.Row="0"
+                Margin="0,0,0,30"
+                FontSize="32"
+                FontWeight="Bold"
+                Foreground="#8B3C46"
+                Text="Dashboard" />
+
+            <StackPanel Grid.Row="1">
+                <TextBlock
+                    Margin="0,0,0,15"
+                    FontSize="20"
+                    FontWeight="SemiBold"
+                    Foreground="#370808"
+                    Text="Overview" />
+
+                <UniformGrid Columns="4">
+                    <Border Background="#E3F2FD" Style="{StaticResource StatCard}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource StatLabel}" Text="Total Movies" />
+                            <TextBlock
+                                x:Name="TotalMoviesText"
+                                Style="{StaticResource StatValue}"
+                                Text="0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#F3E5F5" Style="{StaticResource StatCard}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource StatLabel}" Text="Total Users" />
+                            <TextBlock
+                                x:Name="TotalUsersText"
+                                Style="{StaticResource StatValue}"
+                                Text="0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#E8F5E9" Style="{StaticResource StatCard}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource StatLabel}" Text="Total Directors" />
+                            <TextBlock
+                                x:Name="TotalDirectorsText"
+                                Style="{StaticResource StatValue}"
+                                Text="0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#FFF3E0" Style="{StaticResource StatCard}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource StatLabel}" Text="Total Watches" />
+                            <TextBlock
+                                x:Name="TotalWatchesText"
+                                Style="{StaticResource StatValue}"
+                                Text="0" />
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Margin="0,30,0,0">
+                <TextBlock
+                    Margin="0,0,0,15"
+                    FontSize="20"
+                    FontWeight="SemiBold"
+                    Foreground="#370808"
+                    Text="Statistics" />
+
+                <UniformGrid Columns="4">
+                    <Border Background="#C8E6C9" Style="{StaticResource StatCard}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource StatLabel}" Text="Available Movies" />
+                            <TextBlock
+                                x:Name="AvailableMoviesText"
+                                Style="{StaticResource StatValue}"
+                                Text="0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#FFCDD2" Style="{StaticResource StatCard}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource StatLabel}" Text="Unavailable Movies" />
+                            <TextBlock
+                                x:Name="UnavailableMoviesText"
+                                Style="{StaticResource StatValue}"
+                                Text="0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#BBDEFB" Style="{StaticResource StatCard}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource StatLabel}" Text="Admin Users" />
+                            <TextBlock
+                                x:Name="AdminCountText"
+                                Style="{StaticResource StatValue}"
+                                Text="0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#F8BBD0" Style="{StaticResource StatCard}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource StatLabel}" Text="Regular Users" />
+                            <TextBlock
+                                x:Name="RegularUserCountText"
+                                Style="{StaticResource StatValue}"
+                                Text="0" />
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Margin="0,30,0,0">
+                <TextBlock
+                    Margin="0,0,0,15"
+                    FontSize="20"
+                    FontWeight="SemiBold"
+                    Foreground="#370808"
+                    Text="Details" />
+
+                <UniformGrid Columns="2">
+                    <Border
+                        Margin="10"
+                        Padding="20"
+                        Background="White"
+                        BorderBrush="#EC9FAB"
+                        BorderThickness="2"
+                        CornerRadius="12">
+                        <StackPanel>
+                            <TextBlock
+                                Margin="0,0,0,15"
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Foreground="#8B3C46"
+                                Text="Latest Movies" />
+                            <ItemsControl x:Name="LatestMoviesList">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Margin="0,0,0,8"
+                                            Padding="10"
+                                            Background="#F5F5F5"
+                                            BorderBrush="#E0E0E0"
+                                            BorderThickness="1"
+                                            CornerRadius="8">
+                                            <StackPanel>
+                                                <TextBlock
+                                                    FontWeight="SemiBold"
+                                                    Foreground="#370808"
+                                                    Text="{Binding Title}" />
+                                                <TextBlock
+                                                    Margin="0,3,0,0"
+                                                    FontSize="12"
+                                                    Foreground="#666">
+                                                    <Run Text="Genre: " />
+                                                    <Run Text="{Binding Genre}" />
+                                                    <Run Text=" | " />
+                                                    <Run Text="Status: " />
+                                                    <Run Text="{Binding Status}" />
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <Border
+                        Margin="10"
+                        Padding="20"
+                        Background="White"
+                        BorderBrush="#EC9FAB"
+                        BorderThickness="2"
+                        CornerRadius="12">
+                        <StackPanel>
+                            <TextBlock
+                                Margin="0,0,0,15"
+                                FontSize="18"
+                                FontWeight="SemiBold"
+                                Foreground="#8B3C46"
+                                Text="Most Watched Movies" />
+                            <ItemsControl x:Name="MostWatchedMoviesList">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Margin="0,0,0,8"
+                                            Padding="10"
+                                            Background="#F5F5F5"
+                                            BorderBrush="#E0E0E0"
+                                            BorderThickness="1"
+                                            CornerRadius="8">
+                                            <StackPanel>
+                                                <TextBlock
+                                                    FontWeight="SemiBold"
+                                                    Foreground="#370808"
+                                                    Text="{Binding Title}" />
+                                                <TextBlock
+                                                    Margin="0,3,0,0"
+                                                    FontSize="12"
+                                                    Foreground="#666">
+                                                    <Run Text="Genre: " />
+                                                    <Run Text="{Binding Genre}" />
+                                                    <Run Text=" | " />
+                                                    <Run Text="Status: " />
+                                                    <Run Text="{Binding Status}" />
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>
+

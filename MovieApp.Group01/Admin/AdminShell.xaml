@@ -1,0 +1,168 @@
+<Window
+    x:Class="MovieApp.Group01.AdminShell"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Admin Dashboard"
+    Width="1400"
+    Height="800"
+    Background="White"
+    Loaded="Window_Loaded"
+    ResizeMode="CanResize"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.Resources>
+
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#8B3C46" />
+        <SolidColorBrush x:Key="SecondaryBrush" Color="#EC9FAB" />
+        <SolidColorBrush x:Key="PrimaryTextBrush" Color="#370808" />
+        <SolidColorBrush x:Key="SidebarBrush" Color="#F3D4D0" />
+        <SolidColorBrush x:Key="CardBorderBrush" Color="#EC9FAB" />
+
+        <Style x:Key="NavMenuButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Padding" Value="20,15" />
+            <Setter Property="Foreground" Value="#8B3C46" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="border"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="12">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#EC9FAB" />
+                                <Setter Property="Foreground" Value="#370808" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+            x:Key="NavMenuButtonSelected"
+            BasedOn="{StaticResource NavMenuButton}"
+            TargetType="Button">
+            <Setter Property="Background" Value="#D97E8A" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <!--  Sidebar  -->
+        <Border
+            Grid.Column="0"
+            Margin="-20,0,0,0"
+            Background="#E7C0BC"
+            BorderBrush="#EC9FAB"
+            BorderThickness="0,0,2,0"
+            CornerRadius="20">
+            <StackPanel Margin="40,40,20,40">
+                <TextBlock
+                    Margin="0,0,0,40"
+                    FontSize="30"
+                    FontWeight="Bold"
+                    Foreground="#8B3C46"
+                    Text="Welcome Admin" />
+
+                <TextBlock
+                    Margin="0,0,0,15"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Foreground="#8B3C46"
+                    Text="Menu" />
+
+                <Button
+                    x:Name="DashboardButton"
+                    Click="DashboardButton_Click"
+                    Style="{StaticResource NavMenuButtonSelected}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,12,0"
+                            FontSize="20"
+                            Text="📊" />
+                        <TextBlock Text="Dashboard" />
+                    </StackPanel>
+                </Button>
+
+                <Button
+                    x:Name="MoviesButton"
+                    Click="MoviesButton_Click"
+                    Style="{StaticResource NavMenuButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,12,0"
+                            FontSize="20"
+                            Text="🎬" />
+                        <TextBlock Text="Movie Management" />
+                    </StackPanel>
+                </Button>
+
+                <Button
+                    x:Name="DirectorsButton"
+                    Click="DirectorsButton_Click"
+                    Style="{StaticResource NavMenuButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,12,0"
+                            FontSize="20"
+                            Text="🎥" />
+                        <TextBlock Text="Director Management" />
+                    </StackPanel>
+                </Button>
+
+                <Button
+                    x:Name="UsersButton"
+                    Click="UsersButton_Click"
+                    Style="{StaticResource NavMenuButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,12,0"
+                            FontSize="20"
+                            Text="👥" />
+                        <TextBlock Text="User Management" />
+                    </StackPanel>
+                </Button>
+
+                <Border
+                    Height="1"
+                    Margin="0,20,0,20"
+                    Background="#EC9FAB" />
+
+                <Button Click="LogoutButton_Click" Style="{StaticResource NavMenuButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,12,0"
+                            FontSize="20"
+                            Text="🚪" />
+                        <TextBlock Text="Logout" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <!--  Main  -->
+        <Frame
+            x:Name="ContentFrame"
+            Grid.Column="1"
+            NavigationUIVisibility="Hidden" />
+    </Grid>
+</Window>
+

@@ -44,5 +44,43 @@ namespace MovieApp.BLL.Services
 
             return movies;
         }
+
+        public void AddMovie(Movie movie)
+        {
+            if (movie == null)
+                throw new ArgumentNullException(nameof(movie));
+
+            if (string.IsNullOrWhiteSpace(movie.Title))
+                throw new ArgumentException("Title is required");
+
+            if (string.IsNullOrWhiteSpace(movie.Genre))
+                throw new ArgumentException("Genre is required");
+
+            movie.CreatedAt = DateTime.Now;
+            _movieRepo.AddMovie(movie);
+        }
+
+        public void UpdateMovie(Movie movie)
+        {
+            if (movie == null)
+                throw new ArgumentNullException(nameof(movie));
+
+            if (string.IsNullOrWhiteSpace(movie.Title))
+                throw new ArgumentException("Title is required");
+
+            if (string.IsNullOrWhiteSpace(movie.Genre))
+                throw new ArgumentException("Genre is required");
+
+            _movieRepo.UpdateMovie(movie);
+        }
+
+        public void DeleteMovie(int movieId)
+        {
+            var movie = _movieRepo.GetById(movieId);
+            if (movie == null)
+                throw new ArgumentException("Movie not found");
+
+            _movieRepo.DeleteMovie(movieId);
+        }
     }
 }

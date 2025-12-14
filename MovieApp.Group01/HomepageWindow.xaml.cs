@@ -1,8 +1,5 @@
 ﻿using MovieApp.BLL.Services;
 using MovieApp.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,12 +22,20 @@ namespace MovieApp.Group01
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadMovies();
-            LoadDirectors();
-            LoadGenres();
-            LoadCountries();
+            try
+            {
+                LoadMovies();
+                LoadDirectors();
+                LoadGenres();
+                LoadCountries();
 
-            SearchBox.TextChanged += SearchBox_TextChanged;
+                SearchBox.TextChanged += SearchBox_TextChanged;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show($"Lỗi khi tải dữ liệu",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         // ===================================
@@ -48,12 +53,28 @@ namespace MovieApp.Group01
 
         private Border CreateMovieCard(Movie movie)
         {
-            // ========== Load poster ==========
-            string fullPoster = System.IO.Path.GetFullPath(movie.PosterUrl ?? "");
             BitmapImage posterImg;
 
-            try { posterImg = new BitmapImage(new Uri(fullPoster, UriKind.Absolute)); }
-            catch { posterImg = new BitmapImage(new Uri("pack://application:,,,/assets/default-poster.png")); }
+            if (!string.IsNullOrWhiteSpace(movie.PosterUrl))
+            {
+                try
+                {
+                    var uri = new Uri(movie.PosterUrl, UriKind.Absolute);
+                    posterImg = new BitmapImage(uri);
+                    posterImg.DownloadFailed += (s, e) =>
+                    {
+                        posterImg = new BitmapImage(new Uri("pack://application:,,,/assets/default-poster.png"));
+                    };
+                }
+                catch
+                {
+                    posterImg = new BitmapImage(new Uri("pack://application:,,,/assets/default-poster.png"));
+                }
+            }
+            else
+            {
+                posterImg = new BitmapImage(new Uri("pack://application:,,,/assets/default-poster.png"));
+            }
 
             // ============================================================
             //  POSTER CONTAINER (bo góc luôn đúng)
@@ -417,8 +438,7 @@ namespace MovieApp.Group01
             if (result == MessageBoxResult.Yes)
             {
                 // Clear session
-                SessionContext.CurrentUserId = 0;
-                SessionContext.CurrentUsername = string.Empty;
+                SessionContext.Clear();
 
                 // Show login window
                 var loginWindow = new LoginWindow();

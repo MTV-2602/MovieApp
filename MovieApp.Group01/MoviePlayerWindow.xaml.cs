@@ -1,14 +1,12 @@
 ﻿using Microsoft.Web.WebView2.Core;
 using MovieApp.BLL.Services;
-using System;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace MovieApp.Group01
 {
@@ -83,115 +81,98 @@ namespace MovieApp.Group01
 
             if (!string.IsNullOrWhiteSpace(movie.TrailerUrl))
             {
-                string videoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, movie.TrailerUrl);
-
-                if (!File.Exists(videoPath))
-                {
-                    string projectPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\", movie.TrailerUrl));
-                    if (File.Exists(projectPath)) videoPath = projectPath;
-                }
-
-                if (File.Exists(videoPath))
-                {
-                    PlayVideoInWebView(videoPath);
-                }
-                else
-                {
-                    MessageBox.Show($"❌ Video file not found: {movie.TrailerUrl}");
-                }
+                PlayVideoFromSupabase(movie.TrailerUrl);
             }
 
             // Load rating and comments
             LoadRatingAndComments();
         }
 
-        private void PlayVideoInWebView(string fullPath)
+        private void PlayVideoFromSupabase(string videoUrl)
         {
-            string folder = Path.GetDirectoryName(fullPath);
-            string fileName = Path.GetFileName(fullPath);
-
-            WebPlayer.CoreWebView2.SetVirtualHostNameToFolderMapping(
-                "local.videos",
-                folder,
-                CoreWebView2HostResourceAccessKind.Allow);
+            if (string.IsNullOrWhiteSpace(videoUrl))
+            {
+                MessageBox.Show("Video URL is empty.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             string html = $@"
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <style>
-            body, html {{ 
-                margin: 0; 
-                padding: 0; 
-                width: 100%; 
-                height: 100%; 
-                background-color: black; 
-                overflow: hidden; 
-            }}
-            #vid {{ 
-                width: 100vw;       /* Chiếm 100% chiều rộng view */ 
-                height: 100vh;      /* Chiếm 100% chiều cao view */ 
-                object-fit: contain; /* ⭐ QUAN TRỌNG: Giữ nguyên tỷ lệ video, không bao giờ bị cắt */ 
-                pointer-events: none; /* Click xuyên qua video để WPF bắt sự kiện */ 
-            }}
-        </style>
-    </head>
-    <body>
-        <video id='vid' autoplay>
-            <source src='https://local.videos/{fileName}' type='video/mp4'>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <style>
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+        html, body {{
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }}
+        #player {{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }}
+        video {{
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }}
+    </style>
+</head>
+<body>
+    <div id='player'>
+        <video id='videoPlayer' autoplay>
+            <source src='{videoUrl}' type='video/mp4'>
+            Your browser does not support the video tag.
         </video>
-
-        <script>
-            const v = document.getElementById('vid');
-            
-            // --- XỬ LÝ AUTOPLAY MẠNH MẺ ---
-            // Cố gắng play ngay khi nạp
-            window.onload = function() {{
-                forcePlay();
-            }};
-
-            function forcePlay() {{
-                v.play().then(() => {{
-                    // Play thành công
-                }}).catch((e) => {{
-                    // Nếu lỗi (do browser chặn), thử mute rồi play lại
-                    // v.muted = true; 
-                    // v.play();
-                    // setTimeout(() => {{ v.muted = false; }}, 1000); // Mở lại tiếng sau 1s
-                }});
-            }}
-
-            // Gửi metadata về C#
-            v.onloadedmetadata = () => {{
-                window.chrome.webview.postMessage(JSON.stringify({{ type: 'duration', value: v.duration }}));
-            }};
-
-            v.onclick = () => {{
+    </div>
+    <script>
+        var video = document.getElementById('videoPlayer');
+        
+        video.addEventListener('loadedmetadata', function() {{
+            window.chrome.webview.postMessage(JSON.stringify({{ type: 'duration', value: video.duration }}));
+        }});
+        
+        video.addEventListener('timeupdate', function() {{
+            window.chrome.webview.postMessage(JSON.stringify({{ type: 'time', value: video.currentTime }}));
+        }});
+        
+        video.addEventListener('play', function() {{
+            window.chrome.webview.postMessage(JSON.stringify({{ type: 'play' }}));
+        }});
+        
+        video.addEventListener('pause', function() {{
+            window.chrome.webview.postMessage(JSON.stringify({{ type: 'pause' }}));
+        }});
+        
+        video.addEventListener('ended', function() {{
+            window.chrome.webview.postMessage(JSON.stringify({{ type: 'ended' }}));
+        }});
+        
+        video.addEventListener('click', function() {{
             window.chrome.webview.postMessage(JSON.stringify({{ type: 'toggle' }}));
-            }};
-
-            // Update tiến độ
-            v.ontimeupdate = () => {{
-                window.chrome.webview.postMessage(JSON.stringify({{ type: 'time', value: v.currentTime }}));
-            }};
-
-            // Kết thúc
-            v.onended = () => {{
-                window.chrome.webview.postMessage(JSON.stringify({{ type: 'ended' }}));
-            }};
-
-            // API cho C# gọi
-            function play() {{ v.play(); }}
-            function pause() {{ v.pause(); }}
-            function seek(t) {{ v.currentTime = t; }}
-            function vol(val) {{ v.volume = val; }}
-        </script>
-    </body>
-    </html>";
+        }});
+        
+        function play() {{ video.play(); }}
+        function pause() {{ video.pause(); }}
+        function seek(t) {{ video.currentTime = t; }}
+        function vol(val) {{ video.volume = val; }}
+    </script>
+</body>
+</html>";
 
             WebPlayer.NavigateToString(html);
-
-            // Đặt trạng thái WPF là đang Play để nút hiển thị đúng icon Pause
             _isPlaying = true;
             UpdatePlayButtonState();
         }
@@ -215,7 +196,7 @@ namespace MovieApp.Group01
             // Load average rating
             var avgRating = _ratingService.GetAverageRating(_movieId);
             var ratingCount = _ratingService.GetRatingCount(_movieId);
-            
+
             if (ratingCount > 0)
             {
                 TxtRatingInfo.Text = $"Average: {avgRating:F1}/5 ({ratingCount} ratings)";
@@ -250,12 +231,12 @@ namespace MovieApp.Group01
                 {
                     _ratingService.AddOrUpdateRating(SessionContext.CurrentUserId, _movieId, score);
                     UpdateStarDisplay(score);
-                    
+
                     // Reload rating info
                     var avgRating = _ratingService.GetAverageRating(_movieId);
                     var ratingCount = _ratingService.GetRatingCount(_movieId);
                     TxtRatingInfo.Text = $"Average: {avgRating:F1}/5 ({ratingCount} ratings)";
-                    
+
                     MessageBox.Show($"You rated this movie {score} stars!", "Rating Submitted", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
@@ -268,7 +249,7 @@ namespace MovieApp.Group01
         private void UpdateStarDisplay(int score)
         {
             var stars = new[] { Star1, Star2, Star3, Star4, Star5 };
-            
+
             for (int i = 0; i < stars.Length; i++)
             {
                 stars[i].Content = i < score ? "★" : "☆";
@@ -410,7 +391,7 @@ namespace MovieApp.Group01
             if (!_isFullScreen)
             {
                 _previousWindowStyle = WindowStyle; _previousWindowState = WindowState; _previousResizeMode = ResizeMode;
-                RowHeader.Height = new GridLength(0); 
+                RowHeader.Height = new GridLength(0);
                 RowInfo.Height = new GridLength(0);
                 WindowStyle = WindowStyle.None; ResizeMode = ResizeMode.NoResize; WindowState = WindowState.Maximized;
                 BtnFullscreen.Content = "✖"; _isFullScreen = true;
@@ -418,7 +399,7 @@ namespace MovieApp.Group01
             else
             {
                 WindowStyle = _previousWindowStyle; ResizeMode = _previousResizeMode; WindowState = _previousWindowState;
-                RowHeader.Height = GridLength.Auto; 
+                RowHeader.Height = GridLength.Auto;
                 RowInfo.Height = GridLength.Auto;
                 BtnFullscreen.Content = "⛶"; _isFullScreen = false;
             }

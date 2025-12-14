@@ -59,5 +59,15 @@ namespace MovieApp.DAL.Repositories
         {
             return _ctx.UserAccounts.ToList();
         }
+
+        public void Delete(int userId)
+        {
+            var user = _ctx.UserAccounts.Find(userId);
+            if (user != null)
+            {
+                _ctx.UserAccounts.Remove(user);
+                _ctx.SaveChanges();
+            }
+        }
     }
 }

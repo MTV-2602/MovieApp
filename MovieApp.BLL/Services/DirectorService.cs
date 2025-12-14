@@ -37,5 +37,31 @@ namespace MovieApp.BLL.Services
 
             return _directorRepo.FilterByCountry(country);
         }
+
+        public void AddDirector(Director director)
+        {
+            ValidateDirector(director);
+            director.Status = string.IsNullOrWhiteSpace(director.Status) ? "Active" : director.Status;
+            _directorRepo.Add(director);
+        }
+
+        public void UpdateDirector(Director director)
+        {
+            ValidateDirector(director);
+            _directorRepo.Update(director);
+        }
+
+        public void DeleteDirector(int directorId)
+        {
+            var d = _directorRepo.GetById(directorId);
+            if (d == null) throw new ArgumentException("Director not found");
+            _directorRepo.Delete(directorId);
+        }
+
+        private void ValidateDirector(Director director)
+        {
+            if (director == null) throw new ArgumentNullException(nameof(director));
+            if (string.IsNullOrWhiteSpace(director.DirectorName)) throw new ArgumentException("Director name is required");
+        }
     }
 }

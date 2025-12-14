@@ -148,8 +148,7 @@ namespace MovieApp.Group01
             if (result == MessageBoxResult.Yes)
             {
                 // Clear session
-                SessionContext.CurrentUserId = 0;
-                SessionContext.CurrentUsername = string.Empty;
+                SessionContext.Clear();
 
                 // Show login window
                 var loginWindow = new LoginWindow();

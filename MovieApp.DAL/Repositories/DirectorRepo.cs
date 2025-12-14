@@ -54,6 +54,38 @@ namespace MovieApp.DAL.Repositories
                       .Include(d => d.Movies)
                       .ToList();
         }
+
+        public void Add(Director director)
+        {
+            using var ctx = new MovieAppContext();
+            ctx.Directors.Add(director);
+            ctx.SaveChanges();
+        }
+
+        public void Update(Director director)
+        {
+            using var ctx = new MovieAppContext();
+            var existing = ctx.Directors.Find(director.DirectorId);
+            if (existing == null) throw new ArgumentException("Director not found");
+
+            existing.DirectorName = director.DirectorName;
+            existing.Bio = director.Bio;
+            existing.Country = director.Country;
+            existing.Status = director.Status;
+
+            ctx.SaveChanges();
+        }
+
+        public void Delete(int directorId)
+        {
+            using var ctx = new MovieAppContext();
+            var dir = ctx.Directors.Find(directorId);
+            if (dir != null)
+            {
+                ctx.Directors.Remove(dir);
+                ctx.SaveChanges();
+            }
+        }
     }
 }
 

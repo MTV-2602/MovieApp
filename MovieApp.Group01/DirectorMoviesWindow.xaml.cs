@@ -52,18 +52,27 @@ namespace MovieApp.Group01
             }
         }
 
-        // ==== COPY STYLE TỪ HOMEPAGE ====
         private Border CreateMovieCard(Movie movie)
         {
-            // Load poster
-            string fullPoster = System.IO.Path.GetFullPath(movie.PosterUrl ?? "");
             BitmapImage posterImg;
 
-            try
+            if (!string.IsNullOrWhiteSpace(movie.PosterUrl))
             {
-                posterImg = new BitmapImage(new Uri(fullPoster, UriKind.Absolute));
+                try
+                {
+                    var uri = new Uri(movie.PosterUrl, UriKind.Absolute);
+                    posterImg = new BitmapImage(uri);
+                    posterImg.DownloadFailed += (s, e) =>
+                    {
+                        posterImg = new BitmapImage(new Uri("pack://application:,,,/assets/default-poster.png"));
+                    };
+                }
+                catch
+                {
+                    posterImg = new BitmapImage(new Uri("pack://application:,,,/assets/default-poster.png"));
+                }
             }
-            catch
+            else
             {
                 posterImg = new BitmapImage(new Uri("pack://application:,,,/assets/default-poster.png"));
             }

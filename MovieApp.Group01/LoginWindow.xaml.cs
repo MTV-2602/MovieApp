@@ -1,18 +1,7 @@
 ﻿using MovieApp.BLL.Services;
 using MovieApp.DAL.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MovieApp.Group01
 {
@@ -39,7 +28,6 @@ namespace MovieApp.Group01
                 return;
             }
 
-            // ✔ GỌI ĐÚNG SERVICE
             UserAccount? acc = _service.Authenticate(username, password);
 
             if (acc == null)
@@ -48,20 +36,51 @@ namespace MovieApp.Group01
                 return;
             }
 
-            // Login success
-            if (acc.Role == 2)
+            if (acc.Status == "Banned")
             {
-                SessionContext.CurrentUserId = acc.UserId;
-                SessionContext.CurrentUsername = acc.Username;
-                var home = new HomepageWindow();
-                this.Hide();
-                home.ShowDialog();
+                MessageBox.Show("Tài khoản của bạn đã bị ban. Vui lòng liên hệ admin.",
+                    "Account Banned", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
-            else if (acc.Role == 1)
+
+            if (acc.Status == "Inactive")
             {
-                var admin = new MovieAdminWindow();
-                this.Hide();
-                admin.ShowDialog();
+                MessageBox.Show("Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ admin.",
+                    "Account Inactive", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            SessionContext.CurrentUserId = acc.UserId;
+            SessionContext.CurrentUsername = acc.Username;
+            SessionContext.CurrentRole = acc.Role;
+
+            try
+            {
+                Window targetWindow = acc.Role switch
+                {
+                    1 => new AdminShell(),
+                    2 => new HomepageWindow(),
+                    _ => null
+                };
+
+                if (targetWindow == null)
+                {
+                    MessageBox.Show("Vai trò không hợp lệ.", "Access Denied",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                targetWindow.Loaded += (s, e) =>
+                {
+                    this.Close();
+                };
+                
+                targetWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở cửa sổ: {ex.Message}\n\n{ex.StackTrace}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
